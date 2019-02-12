@@ -4,6 +4,10 @@ import BootstrapVue from 'bootstrap-vue';
 import * as ModalDialogs from 'vue-modal-dialogs';
 import Pusher from 'pusher-js';
 import VueAuth from '@websanova/vue-auth';
+import Icon from 'vue-awesome/components/Icon.vue';
+
+import ApolloClient from 'apollo-boost';
+import VueApollo from 'vue-apollo';
 
 import store from './store';
 
@@ -18,11 +22,25 @@ import App from './App.vue';
 
 (<any>window).Pusher = Pusher;
 
-const Icon = require('vue-awesome/components/Icon');
-Vue.component('icon', Icon);
+Vue.component('v-icon', Icon);
 
 Vue.config.productionTip = false;
 
+const apolloClient = new ApolloClient({
+  uri: 'http://localhost/laravel-vue-boilerplate/public/graphql',
+  request: async (operation) => {
+    operation.setContext({
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('default_auth_token')}`,
+      },
+    });
+  },
+});
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient,
+});
+
+Vue.use(VueApollo);
 Vue.use(BootstrapVue);
 Vue.use(ModalDialogs);
 
@@ -37,6 +55,7 @@ Vue.use(VueAuth, {
 new Vue({
   store,
   router,
+  apolloProvider,
   el: '#app',
   render: h => h(App),
 });
