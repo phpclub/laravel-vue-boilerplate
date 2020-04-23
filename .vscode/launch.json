@@ -19,7 +19,10 @@
       "port": 9000,
       "pathMappings": {
         "/var/www/html": "${workspaceRoot}"
-      }
+      },
+      "ignore": [
+        "**/vendor/**/*"
+      ]
     },
     {
       "name": "Launch currently open script",
